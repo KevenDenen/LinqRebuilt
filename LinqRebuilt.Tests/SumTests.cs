@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LinqRebuilt.Tests
@@ -70,6 +70,70 @@ namespace LinqRebuilt.Tests
       var expected = 0;
       int? result = source.Sum();
       Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void DoubleNullSelectorThrowsArgumentNullException()
+    {
+        double[] source = { 1.3, 2.2, 3.5 };
+        Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+    }
+
+    [Fact]
+    public void DoubleNullableNullSelectorThrowsArgumentNullException()
+    {
+        double?[] source = { 1.3, 2.2, 3.5 };
+        Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+    }
+
+    [Fact]
+    public void DoubleSimpleSequenceResultsInExpectedValue()
+    {
+        double[] source = { 1.3, 2.2, 3.4 };
+        var expected = 6.9;
+        Assert.Equal(expected, source.Sum());
+    }
+
+    [Fact]
+    public void DoubleEmptySequenceResultsInZero()
+    {
+        double[] source = Array.Empty<double>();
+        var expected = 0.0;
+        Assert.Equal(expected, source.Sum());
+    }
+
+    [Fact]
+    public void DoubleNullableSimpleSequenceResultsInValue()
+    {
+        double?[] source = { 1.3, null, 2.2, null, 3.4 };
+        var expected = 6.9;
+        double? result = source.Sum();
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void DoubleNullableSequenceOfNullsResultsInZero()
+    {
+        double?[] source = { null, null, null };
+        var expected = 0.0;
+        double? result = source.Sum();
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void DoubleNegativeOverflow()
+    {
+        double[] source = { double.MinValue, double.MinValue };
+        double result = source.Sum();
+        Assert.True(double.IsInfinity(result));
+    }
+
+    [Fact]
+    public void DoubleOverflow()
+    {
+        double[] source = { double.MaxValue, double.MaxValue };
+        double result = source.Sum();
+        Assert.True(double.IsInfinity(result));
     }
 
     [Fact]
