@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinqRebuilt
 {
-  public static partial class Enumerable
-  {
+    public static partial class Enumerable
+    {
         #region int
 
         public static int Sum(this IEnumerable<int> source)
@@ -86,15 +83,13 @@ namespace LinqRebuilt
             {
                 throw new ArgumentNullException(nameof(selector));
             }
-            checked
+
+            double result = 0;
+            foreach (TSource item in source)
             {
-                double result = 0;
-                foreach (TSource item in source)
-                {
-                    result += selector(item);
-                }
-                return result;
+                result += selector(item);
             }
+            return result;
         }
 
         public static double? Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, double?> selector)
@@ -107,15 +102,13 @@ namespace LinqRebuilt
             {
                 throw new ArgumentNullException(nameof(selector));
             }
-            checked
+
+            double result = 0;
+            foreach (TSource item in source)
             {
-                double result = 0;
-                foreach (TSource item in source)
-                {
-                    result += selector(item).GetValueOrDefault();
-                }
-                return result;
+                result += selector(item).GetValueOrDefault();
             }
+            return result;
         }
 
         #endregion
