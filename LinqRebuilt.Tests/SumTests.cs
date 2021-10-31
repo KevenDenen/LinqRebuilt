@@ -332,5 +332,102 @@ namespace LinqRebuilt.Tests
         }
 
         #endregion
+        
+        #region decimal
+        [Fact]
+        public void DecimalNullSelectorThrowsArgumentNullException()
+        {
+            decimal[] source = { 1.3m, 2.2m, 3.5m };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void DecimalNullableNullSelectorThrowsArgumentNullException()
+        {
+            decimal?[] source = { 1.3m, 2.2m, 3.5m };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void DecimalSimpleSequenceResultsInExpectedValue()
+        {
+            decimal[] source = { 1.3m, 2.2m, 3.4m };
+            const decimal expected = 6.9m;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void DecimalEmptySequenceResultsInZero()
+        {
+            decimal[] source = Array.Empty<decimal>();
+            const decimal expected = 0.0m;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void DecimalNullableSimpleSequenceResultsInValue()
+        {
+            decimal?[] source = { 1.3m, null, 2.2m, null, 3.4m };
+            const decimal expected = 6.9m;
+            decimal? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DecimalNullableSequenceOfNullsResultsInZero()
+        {
+            decimal?[] source = { null, null, null };
+            const decimal expected = 0.0m;
+            decimal? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DecimalSimpleSequenceWithSelectorResultsInExpectedValue()
+        {
+            string[] source = { "keven", "nancy", "mark", "jim" };
+            const decimal expected = 17m;
+            decimal result = source.Sum(s => s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DecimalNullableSimpleSequenceResultsInValueWithSelector()
+        {
+            string[] source = { "keven", "carrot", "nancy", "carrot", "mark", "jim" };
+            const decimal expected = 17m;
+            decimal? result = source.Sum(s => s == "carrot" ? null : s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DecimalNegativeOverflow()
+        {
+            decimal[] source = { decimal.MinValue, decimal.MinValue };
+            Assert.Throws<OverflowException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void DecimalOverflow()
+        {
+            decimal[] source = { decimal.MaxValue, decimal.MaxValue };
+            Assert.Throws<OverflowException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void DecimalNegativeOverFlowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            Assert.Throws<OverflowException>(() => source.Sum(x => decimal.MinValue));
+        }
+
+        [Fact]
+        public void DecimalOverflowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            Assert.Throws<OverflowException>(() => source.Sum(x => decimal.MaxValue));
+        }
+
+        #endregion
     }
 }

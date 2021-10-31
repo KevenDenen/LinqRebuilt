@@ -164,5 +164,57 @@ namespace LinqRebuilt
         }
 
         #endregion
+        
+        #region decimal
+
+        public static decimal Sum(this IEnumerable<decimal> source)
+        {
+            return Sum(source, x => x);
+        }
+
+        public static decimal? Sum(this IEnumerable<decimal?> source)
+        {
+            return Sum(source, x => x);
+        }
+
+        public static decimal Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> selector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            decimal result = 0;
+            foreach (TSource item in source)
+            {
+                result += selector(item);
+            }
+            return result;
+        }
+
+        public static decimal? Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal?> selector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            decimal result = 0;
+            foreach (TSource item in source)
+            {
+                result += selector(item).GetValueOrDefault();
+            }
+            return result;
+        }
+
+        #endregion
     }
 }
