@@ -231,5 +231,106 @@ namespace LinqRebuilt.Tests
         }
 
         #endregion
+
+        #region float
+        [Fact]
+        public void FloatNullSelectorThrowsArgumentNullException()
+        {
+            float[] source = { 1.3f, 2.2f, 3.5f };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void FloatNullableNullSelectorThrowsArgumentNullException()
+        {
+            float?[] source = { 1.3f, 2.2f, 3.5f };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void FloatSimpleSequenceResultsInExpectedValue()
+        {
+            float[] source = { 1.3f, 2.2f, 3.4f };
+            var expected = 6.9f;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void FloatEmptySequenceResultsInZero()
+        {
+            float[] source = Array.Empty<float>();
+            var expected = 0.0f;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void FloatNullableSimpleSequenceResultsInValue()
+        {
+            float?[] source = { 1.3f, null, 2.2f, null, 3.4f };
+            var expected = 6.9f;
+            float? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void FloatNullableSequenceOfNullsResultsInZero()
+        {
+            float?[] source = { null, null, null };
+            var expected = 0.0f;
+            float? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void FloatNegativeOverflow()
+        {
+            float[] source = { float.MinValue, float.MinValue };
+            float result = source.Sum();
+            Assert.True(float.IsInfinity(result));
+        }
+
+        [Fact]
+        public void FloatOverflow()
+        {
+            float[] source = { float.MaxValue, float.MaxValue };
+            float result = source.Sum();
+            Assert.True(float.IsInfinity(result));
+        }
+
+        [Fact]
+        public void FloatSimpleSequenceWithSelectorResultsInExpectedValue()
+        {
+            string[] source = { "keven", "nancy", "mark", "jim" };
+            var expected = 17;
+            float result = source.Sum(s => (float)s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void FloatNullableSimpleSequenceResultsInValueWithSelector()
+        {
+            string[] source = { "keven", "carrot", "nancy", "carrot", "mark", "jim" };
+            var expected = 17;
+            float? result = source.Sum(s => s == "carrot" ? null : (float)s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void FloatNegativeOverFlowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            float result = source.Sum(x => float.MinValue);
+            Assert.True(float.IsNegativeInfinity(result));
+        }
+
+        [Fact]
+        public void FloatOverflowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            float result = source.Sum(x => float.MaxValue);
+            Assert.True(float.IsPositiveInfinity(result));
+        }
+
+        #endregion
     }
 }
