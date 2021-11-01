@@ -216,5 +216,61 @@ namespace LinqRebuilt
         }
 
         #endregion
+
+        #region long
+
+        public static long Sum(this IEnumerable<long> source)
+        {
+            return Sum(source, x => x);
+        }
+
+        public static long? Sum(this IEnumerable<long?> source)
+        {
+            return Sum(source, x => x);
+        }
+
+        public static long Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, long> selector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            checked
+            {
+                long result = 0;
+                foreach (TSource item in source)
+                {
+                    result += selector(item);
+                }
+                return result;
+            }
+        }
+
+        public static long? Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, long?> selector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            checked
+            {
+                long result = 0;
+                foreach (TSource item in source)
+                {
+                    result += selector(item).GetValueOrDefault();
+                }
+                return result;
+            }
+        }
+
+        #endregion
     }
 }
