@@ -429,5 +429,132 @@ namespace LinqRebuilt.Tests
         }
 
         #endregion
+
+        #region Long
+
+        [Fact]
+        public void LongNullSourceThrowsArgumentNullException()
+        {
+            long[] source = null;
+            Assert.Throws<ArgumentNullException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void LongNullSourceNullableThrowsArgumentNullException()
+        {
+            long?[] source = null;
+            Assert.Throws<ArgumentNullException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void LongNullSourceWithSelectorThrowsArgumentNullException()
+        {
+            string[] source = null;
+            Assert.Throws<ArgumentNullException>(() => source.Sum(s => s.Length));
+        }
+
+        [Fact]
+        public void LongNullSourceNullableWithSelectorThrowsArgumentNullException()
+        {
+            string?[] source = null;
+            Assert.Throws<ArgumentNullException>(() => source.Sum(s => s.Length));
+        }
+
+        [Fact]
+        public void LongNullSelectorThrowsArgumentNullException()
+        {
+            long[] source = { 1, 2, 3 };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void LongNullableNullSelectorThrowsArgumentNullException()
+        {
+            long?[] source = { 1, 2, 3 };
+            Assert.Throws<ArgumentNullException>(() => source.Sum(null));
+        }
+
+        [Fact]
+        public void LongSimpleSequenceResultsInExpectedValue()
+        {
+            long[] source = { 1, 2, 3 };
+            var expected = 6;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void LongEmptySequenceResultsInZero()
+        {
+            long[] source = Array.Empty<long>();
+            var expected = 0;
+            Assert.Equal(expected, source.Sum());
+        }
+
+        [Fact]
+        public void LongNullableSimpleSequenceResultsInValue()
+        {
+            long?[] source = { 1, null, 2, null, 3 };
+            var expected = 6;
+            long? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void LongNullableSequenceOfNullsResultsInZero()
+        {
+            long?[] source = { null, null, null };
+            var expected = 0;
+            long? result = source.Sum();
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void LongSimpleSequenceWithSelectorResultsInExpectedValue()
+        {
+            string[] source = { "keven", "nancy", "mark", "jim" };
+            var expected = 17;
+            long result = source.Sum(s => s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void LongNullableSimpleSequenceResultsInValueWithSelector()
+        {
+            string[] source = { "keven", "carrot", "nancy", "carrot", "mark", "jim" };
+            var expected = 17;
+            long? result = source.Sum(s => s == "carrot" ? null : s.Length);
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void LongNegativeOverflow()
+        {
+            long[] source = { long.MinValue, long.MinValue };
+            Assert.Throws<OverflowException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void LongOverflow()
+        {
+            long[] source = { long.MaxValue, long.MaxValue };
+            Assert.Throws<OverflowException>(() => source.Sum());
+        }
+
+        [Fact]
+        public void LongNegativeOverFlowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            Assert.Throws<OverflowException>(() => source.Sum(x => long.MinValue));
+        }
+
+        [Fact]
+        public void LongOverflowWithSelector()
+        {
+            string[] source = { "a", "b" };
+            Assert.Throws<OverflowException>(() => source.Sum(x => long.MaxValue));
+        }
+
+        #endregion
+
     }
 }
